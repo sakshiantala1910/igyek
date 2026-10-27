@@ -1,0 +1,7 @@
+# Vercel installs the serverless function's dependencies from the repo root.
+# Kept in step with backend/requirements.txt.
+fastapi>=0.115,<1
+pandas>=2.2,<3
+numpy>=1.26,<3
+httpx>=0.28,<1
+pydantic>=2.10,<3

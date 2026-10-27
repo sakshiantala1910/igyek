@@ -1,0 +1,25 @@
+# One command brings up the whole product:  docker compose up --build
+# Then open http://localhost:8080
+services:
+  api:
+    build: ./backend
+    environment:
+      # The committed snapshot is the source of truth in the container; set
+      # this to 1 to let the service reach Elexon for anything it is missing.
+      ALLOW_LIVE_FETCH: "0"
+      CORS_ORIGINS: "*"
+    expose:
+      - "8000"
+    ports:
+      # Exposed so the API can be explored directly at /docs during review.
+      - "8000:8000"
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    restart: unless-stopped

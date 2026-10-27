@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-ink text-slate-100 font-sans antialiased;
+}
+
+.card {
+  @apply rounded-xl border border-edge bg-panel p-5;
+}
+
+.label {
+  @apply text-xs uppercase tracking-wider text-muted;
+}
+
+.stat {
+  @apply text-3xl font-semibold tabular-nums;
+}

@@ -1,0 +1,9 @@
+# Floors rather than exact pins: the Docker image runs Python 3.12 where these
+# all have wheels, but contributors on 3.13/3.14 need newer pandas/numpy builds.
+# The container is the reproducible target; see Dockerfile.
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+pandas>=2.2,<3
+numpy>=1.26,<3
+httpx>=0.28,<1
+pydantic>=2.10,<3
