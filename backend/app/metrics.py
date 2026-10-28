@@ -218,8 +218,10 @@ def rolling_bias_correction(
     A lean that persists is a lean you can subtract.
 
     For each delivery day D the correction is the mean signed error over the
-    previous ``lookback_days`` delivery days, strictly before D. No look-ahead,
-    and nothing that could not have been computed on the morning of the bid.
+    ``lookback_days`` delivery days ending at D-2. Not D-1: the bid for D is
+    placed on the morning of D-1, when D-1's outturn does not exist yet. No
+    look-ahead, and nothing that could not have been computed on the morning
+    of the bid.
     """
     scored = df.dropna(subset=["error_mw"]).copy()
     if scored.empty or "delivery_date" not in scored:
@@ -228,7 +230,8 @@ def rolling_bias_correction(
     daily = (
         scored.groupby("delivery_date")["error_mw"].mean().sort_index()
     )
-    correction = daily.shift(1).rolling(lookback_days, min_periods=3).mean()
+    # Assumes consecutive delivery days, which build_study_frame guarantees.
+    correction = daily.shift(2).rolling(lookback_days, min_periods=3).mean()
     scored["correction_mw"] = scored["delivery_date"].map(correction)
     usable = scored.dropna(subset=["correction_mw"]).copy()
     if usable.empty:

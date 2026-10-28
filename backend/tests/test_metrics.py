@@ -74,8 +74,21 @@ def test_bias_correction_uses_only_prior_days():
         dates += [f"2026-01-{day:02d}"] * 2
         errors += [1000.0, 1000.0]
     out = metrics.rolling_bias_correction(frame(errors, dates=dates), 30000)
-    # min_periods=3 means the first three days are dropped, not back-filled.
-    assert out["scored_hours"] == (10 - 3) * 2
+    # The window ends at D-2 and needs 3 days, so the first four are dropped.
+    assert out["scored_hours"] == (10 - 4) * 2
+
+
+def test_bias_correction_never_sees_the_day_before_delivery():
+    """The bid for D is placed on D-1, before D-1's outturn exists."""
+    dates, errors = [], []
+    for day, err in enumerate([1000, 1000, 1000, 1000, 1000, 9000, 1000], start=1):
+        dates.append(f"2026-01-{day:02d}")
+        errors.append(float(err))
+    out = metrics.rolling_bias_correction(frame(errors, dates=dates), 30000)
+    # Days 5-7 are corrected by 1000 each; only day 6's own spike survives.
+    # Had day 6 leaked into day 7's correction, day 7 would be over-corrected.
+    assert out["scored_hours"] == 3
+    assert out["corrected"]["mae_mw"] == pytest.approx(8000 / 3)
 
 
 def test_persistence_benchmark_scores_against_outturn_two_days_back():

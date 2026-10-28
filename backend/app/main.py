@@ -163,11 +163,8 @@ def day(
 
     vintage = frame["publish_time"].iloc[0]
     deadline_utc = frame["deadline_utc"].iloc[0]
-    history = _study_frame(
-        deadline,
-        max(STUDY_DECISION_START, delivery_date - timedelta(days=BAND_LOOKBACK_DAYS + 1)),
-        delivery_date - timedelta(days=2),
-    )
+    start, end = _trailing_decision_window(delivery_date)
+    history = _study_frame(deadline, start, end)
 
     return DayResponse(
         delivery_date=delivery_date.isoformat(),
@@ -191,14 +188,22 @@ def day(
     )
 
 
+def _trailing_decision_window(delivery_date: date) -> tuple[date, date]:
+    """Decision days whose deliveries had settled by the bid for ``delivery_date``.
+
+    The bid is placed on D-1, when D-1's outturn does not exist yet, so the
+    last usable delivery is D-2 - whose decision day is D-3.
+    """
+    end = delivery_date - timedelta(days=3)
+    start = max(STUDY_DECISION_START, end - timedelta(days=BAND_LOOKBACK_DAYS - 1))
+    return start, end
+
+
 def _trailing_band(ds, delivery_date: date, deadline: str, confidence: float) -> dict:
-    """Per-hour-of-day error quantiles from the days before ``delivery_date``."""
+    """Per-hour-of-day error quantiles from deliveries settled before the bid."""
     lo_q = (1 - confidence) / 2
     hi_q = 1 - lo_q
-    start = max(
-        STUDY_DECISION_START, delivery_date - timedelta(days=BAND_LOOKBACK_DAYS + 1)
-    )
-    end = delivery_date - timedelta(days=2)  # decision day of the last prior delivery
+    start, end = _trailing_decision_window(delivery_date)
     if end < start:
         return {}
     hist = align.build_study_frame(

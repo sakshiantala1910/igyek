@@ -64,7 +64,7 @@ its definition in `align.py` and pinned by a test:
 | Vintage strictly before gate closure | Scores the desk on information it never had; flatters every metric | `test_vintage_is_strictly_before_the_deadline` |
 | Average outturn up, don't interpolate forecast down | Invents forecast resolution that never existed | `test_hourly_actuals_average_both_settlement_periods` |
 | Local-clock delivery days | Silently mis-aligns 1–2 hours per day across BST | `test_delivery_day_handles_bst` |
-| Trailing-only uncertainty band | Look-ahead bias; the band would be impossibly good | `rolling_bias_correction` uses `.shift(1)`, covered by `test_bias_correction_uses_only_prior_days` |
+| Trailing-only band, correction and cover, ending at D-2 | Look-ahead bias: at the D-1 bid, D-1's outturn does not exist yet | `rolling_bias_correction` uses `.shift(2)`; `_trailing_decision_window` in `main.py` ends at D-2's decision day. Covered by `test_bias_correction_never_sees_the_day_before_delivery` |
 
 ## Testing
 
