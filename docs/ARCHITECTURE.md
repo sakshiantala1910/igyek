@@ -68,7 +68,7 @@ its definition in `align.py` and pinned by a test:
 
 ## Testing
 
-33 tests, split by what they protect:
+34 tests, split by what they protect:
 
 - `test_align.py` — the judgement calls, on hand-built frames with known answers.
 - `test_metrics.py` — statistics on synthetic data where the correct result is

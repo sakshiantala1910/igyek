@@ -74,7 +74,7 @@ Two parts, five minutes each. Record the app at 1440px wide, dark theme.
 - *"`metrics.py` takes a DataFrame and returns dicts. It doesn't know HTTP
   exists, which is why it's cheap to test. `align.py` doesn't know what a
   metric is. `main.py` does no arithmetic."*
-- Run `pytest -q` on camera — 33 passing.
+- Run `pytest -q` on camera — 34 passing.
 - *"Three layers: judgement calls on hand-built frames; statistics on synthetic
   data with analytically known answers — a constant +1000 MW lean must correct
   to zero; and integration against the real snapshot, which also guards the

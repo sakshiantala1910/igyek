@@ -111,7 +111,7 @@ delivery day.
 │   │   ├── schemas.py        Response models / the API contract
 │   │   └── main.py           FastAPI routes
 │   ├── data/                 Committed January 2026 snapshot (~112 KB gzipped)
-│   ├── tests/                33 tests: unit + integration against real data
+│   ├── tests/                34 tests: unit + integration against real data
 │   └── Dockerfile
 ├── frontend/                 React + TypeScript + Vite + Recharts
 │   ├── src/
@@ -167,7 +167,7 @@ npm run dev
 ### Tests
 
 ```bash
-cd backend && ./.venv/bin/python -m pytest tests -q     # 33 tests
+cd backend && ./.venv/bin/python -m pytest tests -q     # 34 tests
 cd frontend && npm run typecheck && npm run build
 ```
 
